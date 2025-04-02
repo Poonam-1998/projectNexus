@@ -1,0 +1,136 @@
+/* ✅ Container Styling */
+.project-status-container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 40px;
+    background: #ffffff;
+    border: 1px solid #e1e1e1;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+  }
+  
+  /* ✅ Heading */
+  .project-status-container h2 {
+    font-size: 32px;
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: bold;
+  }
+  
+  /* ✅ Details Section */
+  .project-details {
+    margin-bottom: 30px;
+    line-height: 1.8;
+  }
+  
+  .project-details p {
+    font-size: 18px;
+    margin: 8px 0;
+  }
+  
+  .project-details strong {
+    color: #555;
+  }
+  
+  /* ✅ File Section */
+  .project-files h3 {
+    font-size: 22px;
+    color: #34495e;
+    margin-bottom: 15px;
+  }
+  
+  /* ✅ File Link */
+  .project-file {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    border: 1px solid #e1e1e1;
+    border-radius: 5px;
+    background: #f8f8f8;
+    margin-bottom: 10px;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  
+  .project-file:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .project-file a {
+    color: #3498db;
+    text-decoration: none;
+    font-size: 18px;
+    transition: color 0.3s;
+  }
+  
+  .project-file a:hover {
+    color: #1abc9c;
+  }
+  
+  /* ✅ Download Button */
+  .download-btn {
+    background: #4CAF50;
+    color: #fff;
+    border: none;
+    padding: 8px 18px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.3s, transform 0.2s;
+  }
+  
+  .download-btn:hover {
+    background: #45a049;
+    transform: scale(1.05);
+  }
+  
+  /* ✅ No File Message */
+  .no-file {
+    font-size: 16px;
+    color: #888;
+    text-align: center;
+    padding: 20px 0;
+  }
+  
+  /* ✅ Back Button */
+  .back-btn {
+    display: inline-block;
+    padding: 12px 25px;
+    background: #2c3e50;
+    color: #fff;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    border-radius: 5px;
+    transition: background 0.3s, transform 0.2s;
+    margin-top: 20px;
+  }
+  
+  .back-btn:hover {
+    background: #1abc9c;
+    transform: scale(1.05);
+  }
+  
+  /* ✅ Responsive Styling */
+  @media screen and (max-width: 768px) {
+    .project-status-container {
+      padding: 20px;
+    }
+  
+    .project-file {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .download-btn {
+      width: 100%;
+      margin-top: 10px;
+    }
+  }
+  

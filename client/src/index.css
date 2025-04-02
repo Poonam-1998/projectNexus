@@ -1,0 +1,49 @@
+/* ==========================================================================
+   1. Global Styles
+   ========================================================================== */
+
+   body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Or your preferred font */
+    margin: 0;
+    padding: 0;
+    background-color: #f7f7f7; /* Light background */
+    color: #333; /* Darker text */
+  }
+  
+  /* ==========================================================================
+     2. Basic Layout
+     ========================================================================== */
+  
+  .container {
+    max-width: 1200px; /* Adjust as needed */
+    margin: 0 auto;
+    padding: 1rem;
+  }
+  
+  /* ==========================================================================
+     3. Form Elements (Example - Customize Further)
+     ========================================================================== */
+  
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  textarea,
+  select {
+    @apply shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline; /* Use Tailwind classes with @apply */
+    margin-bottom: 0.5rem;
+  }
+  
+  button {
+    @apply bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline; /* Tailwind button */
+    cursor: pointer;
+  }
+  
+  /* ==========================================================================
+     4. Typography (Example - Tailor to Your Design)
+     ========================================================================== */
+  
+  h1, h2, h3 {
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+  
