@@ -113,7 +113,8 @@ router.get('/:id', protect, async (req, res) => {
       const token = generateToken(id, path.basename(file.path));  // ✅ Generate token
       return {
         url: `${baseUrl}/${id}/${path.basename(file.path)}?token=${token}`,  // ✅ Append token to URL
-        originalName: file.originalName
+        originalName: file.originalName,
+        path: `${id}/${file.originalName}`
       };
     }) || [];
 
@@ -153,17 +154,21 @@ router.get('/:id', protect, async (req, res) => {
 });
 
 router.delete('/delete-file', protect, async (req, res) => {
-  const { filePath, projectId } = req.query;
+  const { filePath, projectId ,customerId,deleteMongodbPath} = req.query;
 
+  console.log(req.query);
   console.log('🗑️ Deleting File:', filePath);
   console.log('📂 Project ID:', projectId);
 
   if (!filePath || !projectId) {
       return res.status(400).json({ message: 'Invalid parameters' });
   }
-
+ 
   try {
+    console.log("Take it",projectId);
+    console.log("Customer  ID", customerId);
       const project = await ProjectStatus.findById(projectId);
+ 
       if (!project) {
           return res.status(404).json({ message: 'Project not found' });
       }
@@ -176,8 +181,15 @@ router.delete('/delete-file', protect, async (req, res) => {
           fs.unlinkSync(fullFilePath);
           console.log(`✅ File deleted: ${fullFilePath}`);
 
+          console.log(project);
           // ✅ Remove reference from MongoDB
-          project.quotationFiles = project.quotationFiles.filter(file => file.path !== filePath);
+
+          //project.quotationFiles = project.quotationFiles.filter(file => file.path !== deleteMongodbPath);
+          project.quotationFiles = project.quotationFiles.filter(file => {
+            console.log("Backend Checking file:", file.path, "against", deleteMongodbPath); // Log comparison
+            return file.path !== deleteMongodbPath;
+        });
+    
           project.imageFiles = project.imageFiles.filter(file => file.path !== filePath);
 
           await project.save();

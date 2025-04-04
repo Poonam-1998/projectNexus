@@ -45,9 +45,9 @@ const ProjectStatus = () => {
           headers: { Authorization: `Bearer ${token}` }
         });
 
-        const project = await axios.get(`${API_URL}/project-status/${id}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        // const project = await axios.get(`${API_URL}/project-status/${id}`, {
+        //   headers: { Authorization: `Bearer ${token}` }
+        // });
 
         console.log('Fetched Project Status:', data);  // ✅ Log the full response
         const response = await axios.get(`${API_URL}/customers/${id}`, {
@@ -55,22 +55,25 @@ const ProjectStatus = () => {
           });
           
           const customer = response.data;  
-          const dataProject = project.data;
-          console.log("Here is the response:", customer);  // Correct syntax
-          console.log("Project Status", dataProject);
+          
            
         setProjectStatus({
           ...data,
           customer_id: customer._id,
           user_id: customer.user_id,  // ✅ Explicitly set the ID
-          project_id: dataProject._id,
+          //project_id: dataProject._id,
+          project_id: data._id,
           name:customer.name,
           meetingDate: data.meetingDate || '',
           totalAmount: data.totalAmount || 0,
           paidAmount: data.paidAmount || 0,
+          //quotationFiles:dataProject.quotationFiles,
+          quotationFiles:data.quotationFiles,
+
           paymentStatus: calculatePaymentStatus(data.totalAmount, data.paidAmount),
           paymentHistory: data.paymentHistory || []
         });
+
 
         setSelectedDate(data.meetingDate ? new Date(data.meetingDate) : null);
 
@@ -128,34 +131,29 @@ const ProjectStatus = () => {
   };
 
   
-  const handleDeleteFile = async (fileUrl) => {
+  const handleDeleteFile = async (fileUrl, fileType) => {
     if (!window.confirm('Are you sure you want to delete this file?')) return;
 
+    if (!fileUrl) {
+        console.error('File URL is missing!');
+        alert('Invalid file URL.');
+        return;
+    }
     try {
         const token = localStorage.getItem('token');
         if (!token) {
             alert('No authentication token found.');
             return;
-        }
-
-        if (!fileUrl) {
-            console.error('File URL is missing!');
-            alert('Invalid file URL.');
-            return;
-        }
-
-        console.log('🛠️ Full File URL:', fileUrl);
-
-        // ✅ Extract the base path (remove token)
+        } 
         const url = new URL(fileUrl);
-        const basePath = url.pathname;   // `/api/project-status/files/67e68c27f92fc888dee14947/filename.pdf`
-        console.log('🚩 Base Path without token:', basePath);
-
+        const basePath = url.pathname;
+        
         const pathSegments = basePath.split('/');
 
-        // ✅ Extract the project ID and file name
-        const projectId = pathSegments[4];  // `67e68c27f92fc888dee14947`
-        const fileName = pathSegments.pop();  // `1743310396179-___Information_Security_Fundamentals___Compliance.pdf`
+        const customerId = pathSegments[4];
+        const projectId = projectStatus.id;
+        const fileName = pathSegments.pop();
+        
 
         if (!projectId || !fileName) {
             console.error('Invalid project ID or file name!');
@@ -163,32 +161,61 @@ const ProjectStatus = () => {
             return;
         }
 
-        // ✅ Use the correct path for deletion
-        const deleteFilePath = `uploads/${projectId}/${fileName}`;
-        console.log('🔥 File Path for Deletion:', deleteFilePath);
+        const deleteFilePath = `uploads/${customerId}/${fileName}`;
+        const deleteMongodbPath = `${customerId}/${fileName}`;
+       // console.log('🔥 File Path for Deletion:', deleteFilePath);
 
         const apiUrl = `${API_URL}/project-status/delete-file`;
-        
+
         const response = await axios.delete(apiUrl, {
             headers: { Authorization: `Bearer ${token}` },
-            params: { filePath: deleteFilePath, projectId }
+            params: {
+                filePath: deleteFilePath,
+                projectId,
+                customerId,
+                deleteMongodbPath,
+            },
         });
 
-        console.log('✅ Delete Response:', response.data);
+       // console.log('✅ Delete Response:', response.data);
         alert('File deleted successfully!');
+
+
+        // OPTIMIZATION 1:  Immediate UI Update (Same as before)
+        setProjectStatus(prevStatus => {
+          //console.log("Before Filter - prevStatus.quotationFiles:", prevStatus.quotationFiles); // Log before filtering
+          //console.log("Filtering out fileUrl:", fileUrl); // Log the fileUrl being filtered
+          const updatedQuotationFiles = prevStatus.quotationFiles.filter(file => {
+              console.log("Checking file:", file.url, "against", fileUrl); // Log comparison
+              return file.url !== fileUrl;
+          });
+         // console.log("After Filter - updatedQuotationFiles:", updatedQuotationFiles); // Log after filtering
+          const updatedImageFiles = prevStatus.imageFiles.filter(file => file.url !== fileUrl);
+          return {
+              ...prevStatus,
+              quotationFiles: updatedQuotationFiles,
+              imageFiles: updatedImageFiles,
+          };
+      });
+
+
 
     } catch (error) {
         console.error('❌ Failed to delete file:', error);
-
+        // OPTIMIZATION 2: More Informative Error Handling
+        let errorMessage = 'Failed to delete file. Please try again.';
         if (error.response) {
-            alert(`Failed to delete file: ${error.response.data.message}`);
+            errorMessage = `Failed to delete file: ${error.response.data.message}`;
+            console.error('Server Response:', error.response); // Log the entire server response
+        } else if (error.request) {
+            errorMessage = 'Could not connect to the server.  Check your network connection.';
+            console.error('Request Error:', error.request); //Log the error request
         } else {
-            alert('Failed to delete file. Please try again.');
+            console.error('Error:', error.message);  //log the general error
         }
+        alert(errorMessage);
     }
 };
- 
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();

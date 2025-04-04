@@ -240,7 +240,7 @@ const CustomerList = () => {
                     </div>
 
                     <Link to="/customer-type-config" style={themeStyles.link}>Manage Customer Types</Link>
-
+                    <Link to="/report" style={themeStyles.link}>Generate Report</Link>
                     {filteredCustomers.length === 0 ? (
                         <p className="text-center mt-3">No customers found matching the current filters.</p>
                     ) : (

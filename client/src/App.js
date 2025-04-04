@@ -11,6 +11,7 @@ import ProjectStatus from './components/ProjectStatus'; // Import ProjectStatus
 import CustomerList from './components/CustomerList';
 import CustomerTypeConfig from './components/CustomerTypeConfig';
 import EditCustomer from './components/EditCustomer';
+import Report from './components/Report'; // Import the Report component
 
 
 const App = () => {
@@ -28,6 +29,7 @@ const App = () => {
               </PrivateRoute>
             }
           />
+          <Route path="/report" element={<Report />} />  {/* Add a route for the report */}
           <Route
             path="/project-status/:id"
             element={
